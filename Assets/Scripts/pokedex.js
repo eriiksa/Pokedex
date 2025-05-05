@@ -1,7 +1,7 @@
 class Pokedex {
     constructor() {
-        this.grid = document.querySelector('.pokedex-grid');
-        this.baseUrl = 'https://pokeapi.co/api/v2/pokemon';
+        this.grid = document.querySelector('.pokedex-grid'); // grid que recebe os pokemonList cards
+        this.UrlBase = 'https://pokeapi.co/api/v2/pokemon';
         this.offset = 0;
         this.limit = 151;
         this.init();
@@ -16,13 +16,12 @@ class Pokedex {
         return `
             <article class="pokemon-card ${pokemon.types[0]}">
                 <div class="pokemon-header">
-                    <span class="pokemon-number">#${pokemon.id.toString().padStart(3, '0')}</span>
-                    <h2 class="pokemon-name">${this.capitalize(pokemon.name)}</h2>
+                    <span class="pokemon-number"># ${pokemon.id.toString().padStart(3, '0')} </span>
+                    <h2 class="pokemon-name"> ${this.capitalize(pokemon.name)} </h2>
                 </div>
                 <div class="pokemon-types">
-                    ${pokemon.types.map(type => `
-                        <span class="type-badge ${type}">${this.capitalize(type)}</span>
-                    `).join('')}
+                    ${pokemon.types.map(type => /* map percorre os tipos,criando um span type-badge para cada tipo*/ `
+                    <span class="type-badge ${type}"> ${this.capitalize(type)} </span>`).join('')/*retira a virgula que o join adiciona ao concatenar os spans*/} 
                 </div>
                 <img class="pokemon-image" src="${pokemon.image}" alt="${pokemon.name}">
             </article>
@@ -40,7 +39,7 @@ class Pokedex {
     }
 
     async fetchPokemons() {
-        const response = await fetch(`${this.baseUrl}?offset=${this.offset}&limit=${this.limit}`);
+        const response = await fetch(`${this.UrlBase}?offset=${this.offset}&limit=${this.limit}`);
         const data = await response.json();
         return Promise.all(
             data.results.map(async (pokemon) => {
@@ -51,17 +50,15 @@ class Pokedex {
     }
 
     // Métodos de exibição
-    displayPokemons(pokemons) {
-        this.grid.innerHTML = pokemons
-            .map(pokemon => this.createPokemonCard(pokemon))
-            .join('');
+    displayPokemons(pokemonList) {
+        this.grid.innerHTML = pokemonList.map(pokemon => this.createPokemonCard(pokemon)).join('');
     }
 
     // Fluxo principal
     async init() {
         try {
-            const pokemons = await this.fetchPokemons();
-            this.displayPokemons(pokemons);
+            const pokemonList = await this.fetchPokemons();
+            this.displayPokemons(pokemonList);
         } catch (error) {
             console.error('Error initializing Pokedex:', error);
         }
