@@ -2,44 +2,16 @@ class Pokedex {
     constructor() {
         this.grid = document.querySelector('.pokedex-grid');
         this.baseUrl = 'https://pokeapi.co/api/v2/pokemon';
+        this.offset = 0;
+        this.limit = 151;
         this.init();
     }
 
-    async init() {
-        try {
-            const pokemons = await this.fetchPokemons();
-            this.displayPokemons(pokemons);
-        } catch (error) {
-            console.error('Error initializing Pokedex:', error);
-        }
+    // Métodos auxiliares
+    capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
-
-    async fetchPokemons() {
-        const response = await fetch(`${this.baseUrl}?limit=1025`);
-        const data = await response.json();
-        return Promise.all(
-            data.results.map(async (pokemon) => {
-                const details = await fetch(pokemon.url).then(res => res.json());
-                return this.parsePokemonData(details);
-            })
-        );
-    }
-
-    parsePokemonData(pokemon) {
-        return {
-            id: pokemon.id,
-            name: pokemon.name,
-            types: pokemon.types.map(t => t.type.name),
-            image: pokemon.sprites.other['official-artwork'].front_default
-        };
-    }
-
-    displayPokemons(pokemons) {
-        this.grid.innerHTML = pokemons
-            .map(pokemon => this.createPokemonCard(pokemon))
-            .join('');
-    }
-
+    // Layout dos cards
     createPokemonCard(pokemon) {
         return `
             <article class="pokemon-card ${pokemon.types[0]}">
@@ -57,10 +29,43 @@ class Pokedex {
         `;
     }
 
-    capitalize(str) {
-        return str.charAt(0).toUpperCase() + str.slice(1);
+    // Métodos de processamento de dados
+    parsePokemonData(pokemon) {
+        return {
+            id: pokemon.id,
+            name: pokemon.name,
+            types: pokemon.types.map(t => t.type.name),
+            image: pokemon.sprites.other['official-artwork'].front_default
+        };
+    }
+
+    async fetchPokemons() {
+        const response = await fetch(`${this.baseUrl}?offset=${this.offset}&limit=${this.limit}`);
+        const data = await response.json();
+        return Promise.all(
+            data.results.map(async (pokemon) => {
+                const details = await fetch(pokemon.url).then(res => res.json());
+                return this.parsePokemonData(details);
+            })
+        );
+    }
+
+    // Métodos de exibição
+    displayPokemons(pokemons) {
+        this.grid.innerHTML = pokemons
+            .map(pokemon => this.createPokemonCard(pokemon))
+            .join('');
+    }
+
+    // Fluxo principal
+    async init() {
+        try {
+            const pokemons = await this.fetchPokemons();
+            this.displayPokemons(pokemons);
+        } catch (error) {
+            console.error('Error initializing Pokedex:', error);
+        }
     }
 }
 
-// Initialize Pokedex when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => new Pokedex());
