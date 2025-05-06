@@ -1,17 +1,15 @@
 class Pokedex {
     constructor() {
         this.grid = document.querySelector('.pokedex-grid'); // grid que recebe os pokemonList cards
-        this.UrlBase = 'https://pokeapi.co/api/v2/pokemon';
-        this.offset = 0;
-        this.limit = 151;
+        this.api = new PokeAPI();
         this.init();
     }
 
-    // Métodos auxiliares
+    // Métodos de renderização
     capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
-    // Layout dos cards
+
     createPokemonCard(pokemon) {
         return `
             <article class="pokemon-card ${pokemon.types[0]}">
@@ -28,39 +26,17 @@ class Pokedex {
         `;
     }
 
-    // Métodos de processamento de dados
-    parsePokemonData(pokemon) {
-        return {
-            id: pokemon.id,
-            name: pokemon.name,
-            types: pokemon.types.map(t => t.type.name),
-            image: pokemon.sprites.other['official-artwork'].front_default
-        };
-    }
-
-    async fetchPokemons() {
-        const response = await fetch(`${this.UrlBase}?offset=${this.offset}&limit=${this.limit}`);
-        const data = await response.json();
-        return Promise.all(
-            data.results.map(async (pokemon) => {
-                const details = await fetch(pokemon.url).then(res => res.json());
-                return this.parsePokemonData(details);
-            })
-        );
-    }
-
     // Métodos de exibição
     displayPokemons(pokemonList) {
         this.grid.innerHTML = pokemonList.map(pokemon => this.createPokemonCard(pokemon)).join('');
     }
 
-    // Fluxo principal
     async init() {
         try {
-            const pokemonList = await this.fetchPokemons();
+            const pokemonList = await this.api.fetchPokemons();
             this.displayPokemons(pokemonList);
         } catch (error) {
-            console.error('Error initializing Pokedex:', error);
+            console.error('Error initializing Pokedex', error)
         }
     }
 }
