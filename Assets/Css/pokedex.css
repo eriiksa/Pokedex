@@ -90,6 +90,67 @@
     transform: translateY(0);
 }
 
+/* Ajustes para tablets */
+@media (max-width: 768px) {
+    .pokedex-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1rem;
+    }
+
+    .pokemon-name {
+        font-size: 1.2rem;
+    }
+
+    .type-badge {
+        font-size: 14px;
+        padding: 0.2rem 0.6rem;
+    }
+
+    #load-more {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+}
+
+/* Ajustes para celulares */
+@media (max-width: 480px) {
+    .pokedex-grid {
+        grid-template-columns: 1fr;
+        padding: 0;
+    }
+
+    .pokemon-card {
+        margin: 0.5rem;
+    }
+
+    .pokemon-header .pokemon-name {
+        font-size: 24px;
+    }
+
+    .pokemon-image {
+        max-width: 150px;
+    }
+
+    .pokemon-types {
+        justify-content: center;
+    }
+}
+
+/* Ajustes para telas muito pequenas */
+@media (max-width: 320px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    .pokemon-number {
+        font-size: 0.8rem;
+    }
+
+    .type-badge {
+        font-size: 12px;
+    }
+}
+
 .grass {
     background-color: #14A06F;
 }
