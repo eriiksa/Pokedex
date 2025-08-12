@@ -1,3 +1,5 @@
+Lnk do site: https://pokedex-images.netlify.app
+
 📖 Sobre o Projeto
 
 Este é um projeto de uma Pokédex web simples, criado para fins de estudo e prática de tecnologias front-end. A aplicação consome a PokeAPI para buscar e exibir uma lista de Pokémons de forma dinâmica.
