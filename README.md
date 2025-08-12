@@ -1,4 +1,4 @@
-Lnk do site: https://pokedex-images.netlify.app
+Link do site: https://pokedex-images.netlify.app
 
 📖 Sobre o Projeto
 
